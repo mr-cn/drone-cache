@@ -48,6 +48,17 @@ type FileSystemConfig struct {
 	CacheRoot string
 }
 
+// FTPConfig is astructure to store FTP backend configuration
+type FTPConfig struct {
+	Hostname string
+	Key      string
+	Password string
+	Username string
+
+	Port   int
+	Secure bool
+}
+
 // InitializeS3Backend creates an S3 backend
 func InitializeS3Backend(c S3Config, debug bool) (cache.Backend, error) {
 	awsConf := &aws.Config{
@@ -87,4 +98,13 @@ func InitializeFileSystemBackend(c FileSystemConfig, debug bool) (cache.Backend,
 	}
 
 	return newFileSystem(c.CacheRoot), nil
+}
+
+// InitializeFTPBackend creates an FTP backend
+func InitializeFTPBackend(c FTPConfig, debug bool) (cache.Backend, error) {
+	if debug {
+		log.Printf("[DEBUG] ftp backend config: %+v", c)
+	}
+
+	return newFTP(c), nil
 }

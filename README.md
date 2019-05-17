@@ -1,6 +1,6 @@
-
 # drone-cache
-[![semver](https://img.shields.io/badge/semver-1.0.2-blue.svg?cacheSeconds=2592000)](https://github.com/meltwater/drone-cache/releases) [![Maintenance](https://img.shields.io/maintenance/yes/2019.svg)](https://github.com/meltwater/drone-cache/commits/master) [![Drone](https://cloud.drone.io/api/badges/meltwater/drone-cache/status.svg)](https://cloud.drone.io/meltwater/drone-cache) [![Go Doc](https://godoc.org/github.com/meltwater/drone-cache?status.svg)](http://godoc.org/github.com/meltwater/drone-cache) [![Go Report Card](https://goreportcard.com/badge/github.com/meltwater/drone-cache)](https://goreportcard.com/report/github.com/meltwater/drone-cache) [![](https://images.microbadger.com/badges/image/meltwater/drone-cache.svg)](https://microbadger.com/images/meltwater/drone-cache) [![](https://images.microbadger.com/badges/version/meltwater/drone-cache.svg)](https://microbadger.com/images/meltwater/drone-cache)
+
+[![semver](https://img.shields.io/badge/semver-1.1.0-blue.svg?cacheSeconds=2592000)](https://github.com/meltwater/drone-cache/releases) [![Maintenance](https://img.shields.io/maintenance/yes/2019.svg)](https://github.com/meltwater/drone-cache/commits/master) [![Drone](https://cloud.drone.io/api/badges/meltwater/drone-cache/status.svg)](https://cloud.drone.io/meltwater/drone-cache) [![Go Doc](https://godoc.org/github.com/meltwater/drone-cache?status.svg)](http://godoc.org/github.com/meltwater/drone-cache) [![Go Report Card](https://goreportcard.com/badge/github.com/meltwater/drone-cache)](https://goreportcard.com/report/github.com/meltwater/drone-cache) [![](https://images.microbadger.com/badges/image/meltwater/drone-cache.svg)](https://microbadger.com/images/meltwater/drone-cache) [![](https://images.microbadger.com/badges/version/meltwater/drone-cache.svg)](https://microbadger.com/images/meltwater/drone-cache)
 
 <p align="center"><img src="images/drone_gopher.png" width="400"></p>
 
@@ -26,7 +26,7 @@ With restored dependencies from a cache, commands like `mix deps.get` will only 
 
 ## Example Usage of drone-cache
 
-The following `.drone.yml` configuration show the most common use of drone-cache. 
+The following `.drone.yml` configuration show the most common use of drone-cache.
 
 Note: These configs use drone 1.0 syntax. If you are using drone 0.8, check the examples in [docs/examples/drone-0.8.md](docs/examples/drone-0.8.md).
 
@@ -80,8 +80,8 @@ steps:
 
 ### Other Examples
 
-* examples for Drone 0.8, see [docs/examples/drone-0.8.md](docs/examples/drone-0.8.md)
-* examples for Drone 1.0, see [docs/examples/drone-1.0.md](docs/examples/drone-1.0.md)
+- examples for Drone 0.8, see [docs/examples/drone-0.8.md](docs/examples/drone-0.8.md)
+- examples for Drone 1.0, see [docs/examples/drone-1.0.md](docs/examples/drone-1.0.md)
 
 ## Usage
 
@@ -95,7 +95,7 @@ USAGE:
    drone-cache [global options] command [command options] [arguments...]
 
 VERSION:
-   1.0.2
+   1.1.0
 
 COMMANDS:
      help, h  Shows a list of commands or help for one command
@@ -131,7 +131,7 @@ GLOBAL OPTIONS:
    --prev.build.number value, --pbn value      previous build number (default: 0) [$DRONE_PREV_BUILD_NUMBER]
    --prev.build.status value, --pbst value     previous build status [$DRONE_PREV_BUILD_STATUS]
    --prev.commit.sha value, --pcs value        previous build sha [$DRONE_PREV_COMMIT_SHA]
-   --backend value, -b value                   cache backend to use in plugin (s3, filesystem) (default: "s3") [$PLUGIN_BACKEND]
+   --backend value, -b value                   cache backend to use in plugin (s3, filesystem, ftp) (default: "s3") [$PLUGIN_BACKEND]
    --mount value, -m value                     cache directories, an array of folders to cache [$PLUGIN_MOUNT]
    --rebuild, --reb                            rebuild the cache directories [$PLUGIN_REBUILD]
    --restore, --res                            restore the cache directories [$PLUGIN_RESTORE]
@@ -144,9 +144,15 @@ GLOBAL OPTIONS:
    --secret-key value, --skey value            AWS secret key [$PLUGIN_SECRET_KEY, $AWS_SECRET_ACCESS_KEY, $CACHE_AWS_SECRET_ACCESS_KEY]
    --bucket value, --bckt value                AWS bucket name [$PLUGIN_BUCKET, $S3_BUCKET]
    --region value, --reg value                 AWS bucket region. (us-east-1, eu-west-1, ...) [$PLUGIN_REGION, $S3_REGION]
-   --path-style, --ps                          use path style for bucket paths. (true for minio, false for aws) [$PLUGIN_PATH_STYLE]
-   --acl value                                 upload files with acl (private, public-read, ...) (default: "private") [$PLUGIN_ACL]
-   --encryption value, --enc value             server-side encryption algorithm, defaults to none. (AES256, aws:kms) [$PLUGIN_ENCRYPTION]
+   --path-style, --ps                          use path style for bucket paths. (true for minio, false for aws) [$PLUGIN_PATH_STYLE, $ S3_PATH_STYLE]
+   --acl value                                 upload files with acl (private, public-read, ...) (default: "private") [$PLUGIN_ACL, $ S3_ACL]
+   --encryption value, --enc value             server-side encryption algorithm, defaults to none. (AES256, aws:kms) [$PLUGIN_ENCRYPTION, $ S3_ENCRYPTION]
+   --username value, -u value                  username for the ftp connection [$PLUGIN_USERNAME, $FTP_USERNAME]
+   --password value, --pass value              password for the ftp connection [$PLUGIN_PASSWORD, $FTP_PASSWORD]
+   --hostname value, --hst value               hostname for the ftp connection [$PLUGIN_HOSTNAME, $FTP_HOSTNAME]
+   --port value, -p value                      port for the ftp connection (default: 0) [$PLUGIN_PORT, $FTP_PORT]
+   --key value, -k value                       private key for the sftp connection [$PLUGIN_KEY, $FTP_KEY]
+   --secure, --sec                             secure connection ftp connection [$PLUGIN_SECURE, $ FTP_SECURE]
    --help, -h                                  show help
    --version, -v                               print the version
 ```
@@ -211,13 +217,13 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Future work
 
-* [ ] Add s/FTP Backend
-* [ ] Fix goreleaser/drone/docker conflicts or remove redundancy with Drone jsonnet
-* [ ] Add cache key fallback list
-* [ ] Flush or TTL/Retention policy
-* [ ] Add Google Cloud Storage Backend
-* [ ] Add Microsoft Azure Storage Backend
-* [ ] Add unit tests
+- [x] Add s/FTP Backend
+- [ ] Fix goreleaser/drone/docker conflicts or remove redundancy with Drone jsonnet
+- [ ] Add cache key fallback list
+- [ ] Flush or TTL/Retention policy
+- [ ] Add Google Cloud Storage Backend
+- [ ] Add Microsoft Azure Storage Backend
+- [ ] Add unit tests
 
 ## Versioning
 
@@ -225,18 +231,17 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors and Acknowledgement
 
-* [@dim](https://github.com/dim) - Thanks for [original work](https://github.com/bsm/drone-s3-cache)!
-* [@kakkoyun](https://github.com/kakkoyun)
-* [@salimane](https://github.com/salimane)
-* [@AdamGlazerMW](https://github.com/AdamGlazerMW) - Special thanks to Adam for the amazing artwork!
+- [@dim](https://github.com/dim) - Thanks for [original work](https://github.com/bsm/drone-s3-cache)!
+- [@kakkoyun](https://github.com/kakkoyun)
+- [@salimane](https://github.com/salimane)
+- [@AdamGlazerMW](https://github.com/AdamGlazerMW) - Special thanks to Adam for the amazing artwork!
 
 Also see the list of [all contributors](https://github.com/meltwater/drone-cache/graphs/contributors).
 
-
 ### Inspiration
 
-* https://github.com/bsm/drone-s3-cache (original work)
-* https://github.com/Drillster/drone-volume-cache
+- https://github.com/bsm/drone-s3-cache (original work)
+- https://github.com/Drillster/drone-volume-cache
 
 ## License and Copyright
 

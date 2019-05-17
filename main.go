@@ -16,7 +16,7 @@ func main() {
 	app.Name = "Drone cache plugin"
 	app.Usage = "Drone cache plugin"
 	app.Action = run
-	app.Version = "1.0.2"
+	app.Version = "1.1.0"
 	app.Flags = []cli.Flag{
 		// Repo args
 
@@ -188,7 +188,7 @@ func main() {
 
 		cli.StringFlag{
 			Name:   "backend, b",
-			Usage:  "cache backend to use in plugin (s3, filesystem)",
+			Usage:  "cache backend to use in plugin (s3, filesystem, ftp)",
 			Value:  "s3",
 			EnvVar: "PLUGIN_BACKEND",
 		},
@@ -264,18 +264,51 @@ func main() {
 		cli.BoolFlag{
 			Name:   "path-style, ps",
 			Usage:  "use path style for bucket paths. (true for minio, false for aws)",
-			EnvVar: "PLUGIN_PATH_STYLE",
+			EnvVar: "PLUGIN_PATH_STYLE, S3_PATH_STYLE",
 		},
 		cli.StringFlag{
 			Name:   "acl",
 			Usage:  "upload files with acl (private, public-read, ...)",
 			Value:  "private",
-			EnvVar: "PLUGIN_ACL",
+			EnvVar: "PLUGIN_ACL, S3_ACL",
 		},
 		cli.StringFlag{
 			Name:   "encryption, enc",
 			Usage:  "server-side encryption algorithm, defaults to none. (AES256, aws:kms)",
-			EnvVar: "PLUGIN_ENCRYPTION",
+			EnvVar: "PLUGIN_ENCRYPTION, S3_ENCRYPTION",
+		},
+
+		// FTP specific Config args
+
+		cli.StringFlag{
+			Name:   "username, u",
+			Usage:  "username for the ftp connection",
+			EnvVar: "PLUGIN_USERNAME,FTP_USERNAME",
+		},
+		cli.StringFlag{
+			Name:   "password, pass",
+			Usage:  "password for the ftp connection",
+			EnvVar: "PLUGIN_PASSWORD,FTP_PASSWORD",
+		},
+		cli.StringFlag{
+			Name:   "hostname, hst",
+			Usage:  "hostname for the ftp connection",
+			EnvVar: "PLUGIN_HOSTNAME,FTP_HOSTNAME",
+		},
+		cli.IntFlag{
+			Name:   "port, p",
+			Usage:  "port for the ftp connection",
+			EnvVar: "PLUGIN_PORT,FTP_PORT",
+		},
+		cli.StringFlag{
+			Name:   "key, k",
+			Usage:  "private key for the sftp connection",
+			EnvVar: "PLUGIN_KEY,FTP_KEY",
+		},
+		cli.BoolFlag{
+			Name:   "secure, sec",
+			Usage:  "secure connection ftp connection",
+			EnvVar: "PLUGIN_SECURE, FTP_SECURE",
 		},
 	}
 
@@ -328,7 +361,6 @@ func run(c *cli.Context) error {
 			Mount:         c.StringSlice("mount"),
 			Rebuild:       c.Bool("rebuild"),
 			Restore:       c.Bool("restore"),
-
 			FileSystem: backend.FileSystemConfig{
 				CacheRoot: c.String("filesystem-cache-root"),
 			},
@@ -341,6 +373,14 @@ func run(c *cli.Context) error {
 				PathStyle:  c.Bool("path-style"),
 				Region:     c.String("region"),
 				Secret:     c.String("secret-key"),
+			},
+			FTP: backend.FTPConfig{
+				Hostname: c.String("hostname"),
+				Key:      c.String("key"),
+				Password: c.String("password"),
+				Port:     c.Int("port"),
+				Secure:   c.Bool("secure"),
+				Username: c.String("username"),
 			},
 		},
 	}
