@@ -6,11 +6,15 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/meltwater/drone-cache/cache"
 	"github.com/pkg/errors"
+	"github.com/pkg/sftp"
+
+	"golang.org/x/crypto/ssh"
 )
 
 // S3Config is a structure to store S3  backend configuration
@@ -55,8 +59,8 @@ type FTPConfig struct {
 	Password string
 	Username string
 
-	Port   int
-	Secure bool
+	Port    int
+	Timeout time.Duration
 }
 
 // InitializeS3Backend creates an S3 backend
@@ -102,9 +106,43 @@ func InitializeFileSystemBackend(c FileSystemConfig, debug bool) (cache.Backend,
 
 // InitializeFTPBackend creates an FTP backend
 func InitializeFTPBackend(c FTPConfig, debug bool) (cache.Backend, error) {
+	auth := []ssh.AuthMethod{}
+
+	if c.Password != "" {
+		auth = append(auth, ssh.Password(c.Password))
+	}
+
+	if c.Key != "" {
+		signer, err := ssh.ParsePrivateKey([]byte(c.Key))
+		if err != nil {
+			return nil, errors.Wrap(err, "could not parse private key")
+		}
+		auth = append(auth, ssh.PublicKeys(signer))
+	}
+
+	var hostKey ssh.PublicKey
+	sshConfig := &ssh.ClientConfig{
+		Timeout:         c.Timeout,
+		User:            c.Username,
+		Auth:            auth,
+		HostKeyCallback: ssh.FixedHostKey(hostKey),
+	}
+
+	address := fmt.Sprintf("%s:%d", c.Hostname, c.Port)
+	sshClient, err := ssh.Dial("tcp", address, sshConfig)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("could not connect server <%s>", address))
+	}
+
+	sftp, err := sftp.NewClient(sshClient)
+	if err != nil {
+		sshClient.Close()
+		return nil, errors.Wrap(err, "could not initialize sFTP client")
+	}
+
 	if debug {
 		log.Printf("[DEBUG] ftp backend config: %+v", c)
 	}
 
-	return newFTP(c), nil
+	return newFTP(sftp), nil
 }

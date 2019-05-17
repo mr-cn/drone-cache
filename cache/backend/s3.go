@@ -37,7 +37,7 @@ func (c *s3Backend) Get(p string) (io.ReadCloser, error) {
 		Key:    aws.String(p),
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "couldn't get the object")
+		return nil, errors.Wrap(err, "could not get the object")
 	}
 
 	return out.Body, nil
@@ -55,5 +55,5 @@ func (c *s3Backend) Put(p string, src io.ReadSeeker) error {
 		in.ServerSideEncryption = aws.String(c.encryption)
 	}
 	_, err := c.client.PutObject(in)
-	return errors.Wrap(err, "couldn't put the object")
+	return errors.Wrap(err, "could not put the object")
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/urfave/cli"
 
@@ -305,10 +306,11 @@ func main() {
 			Usage:  "private key for the sftp connection",
 			EnvVar: "PLUGIN_KEY,FTP_KEY",
 		},
-		cli.BoolFlag{
-			Name:   "secure, sec",
-			Usage:  "secure connection ftp connection",
-			EnvVar: "PLUGIN_SECURE, FTP_SECURE",
+		cli.DurationFlag{
+			Name:   "timeout, t",
+			Usage:  "connection timeout for the ftp connection",
+			Value:  5 * time.Minute,
+			EnvVar: "PLUGIN_TIMEOUT, FTP_TIMEOUT",
 		},
 	}
 
@@ -379,7 +381,7 @@ func run(c *cli.Context) error {
 				Key:      c.String("key"),
 				Password: c.String("password"),
 				Port:     c.Int("port"),
-				Secure:   c.Bool("secure"),
+				Timeout:  c.Duration("timeout"),
 				Username: c.String("username"),
 			},
 		},
