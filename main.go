@@ -299,6 +299,7 @@ func main() {
 		cli.IntFlag{
 			Name:   "port, p",
 			Usage:  "port for the ftp connection",
+			Value:  22,
 			EnvVar: "PLUGIN_PORT,FTP_PORT",
 		},
 		cli.StringFlag{

@@ -13,11 +13,16 @@ import (
 )
 
 const (
-	defaultEndpoint        = "127.0.0.1:9000"
-	defaultAccessKey       = "AKIAIOSFODNN7EXAMPLE"
-	defaultSecretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 	bucket                 = "meltwater-drone-test"
+	defaultAccessKey       = "AKIAIOSFODNN7EXAMPLE"
+	defaultEndpoint        = "127.0.0.1:9000"
+	defaultSecretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+	hostname               = "localhost"
+	key                    = "TODO"
+	password               = "p@ssw0rd"
+	port                   = 1722
 	region                 = "eu-west-1"
+	username               = "username"
 	useSSL                 = false
 )
 
@@ -432,6 +437,14 @@ func newTestPlugin(bck string, rebuild, restore bool, mount []string, cacheKey, 
 				PathStyle:  true, // Should be true for minio and false for AWS.
 				Region:     region,
 				Secret:     secretAccessKey,
+			},
+
+			FTP: backend.FTPConfig{
+				Username: username,
+				Password: password,
+				Hostname: hostname,
+				Port:     port,
+				Key:      key,
 			},
 		},
 	}
